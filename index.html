@@ -1,0 +1,73 @@
+<title>What If Asset Library</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap">
+<style>
+/* Layout: a storyboard workbench. Search and filters on top, a shelf of picture tiles on the left, the big ink-outlined stage and "use it" sheet on the right. */
+:root{--bg:#EEF1EC;--panel:#FFFFFF;--fg:#0E0B12;--muted:#55586A;--line:#0E0B12;--accent:#0B8F82;--chip:#FFFFFF;--on:#3FE0D0;--warn:#E5484D;--new:#FFC53D;--stage:#D9E4E8;--code:#14161F;--codefg:#E9F7F4;--font:"Nunito",ui-rounded,"Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171E;--panel:#20232D;--fg:#F2F3EE;--muted:#ABAFBD;--line:#000000;--accent:#3FE0D0;--chip:#2A2E3A;--on:#3FE0D0;--stage:#12141A;--code:#0D0E13;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15171E;--panel:#20232D;--fg:#F2F3EE;--muted:#ABAFBD;--line:#000000;--accent:#3FE0D0;--chip:#2A2E3A;--on:#3FE0D0;--stage:#12141A;--code:#0D0E13;color-scheme:dark}
+[hidden]{display:none!important}*{box-sizing:border-box}body{background:var(--bg);color:var(--fg);font:600 15px/1.45 var(--font);margin:0}
+.wrap{padding-block:14px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1640px;margin:auto}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-bottom:10px}
+h1{font-size:26px;font-weight:900;margin:0;letter-spacing:-.01em;text-wrap:balance}#total{color:var(--muted);font-variant-numeric:tabular-nums}
+#fixcount{margin-left:auto;font-weight:900;border:3px solid var(--line);border-radius:999px;padding:3px 14px;background:var(--on);color:#0E0B12}
+#find{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-bottom:12px}
+#searchwrap{flex:1 1 280px;min-width:0;position:relative}#q{width:100%;font:800 16px var(--font);color:var(--fg);background:var(--panel);border:3px solid var(--line);border-radius:999px;padding:8px 16px 8px 18px}#q::placeholder{color:var(--muted)}
+#filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}#filters .gap{width:10px}
+.chip,.mini-b,.save{font:800 13px var(--font);color:var(--fg);background:var(--chip);border:3px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}.chip[aria-pressed="true"]{background:var(--on);color:#0E0B12}.chip.ex{border-style:dashed}
+.main{display:grid;grid-template-columns:minmax(290px,380px) minmax(0,1fr);gap:18px;align-items:start}
+#list{display:grid;gap:14px;max-height:calc(100vh - 130px);overflow:auto;padding-right:6px}
+h2{font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;margin:0 0 6px;position:sticky;top:0;background:var(--bg);padding-block:3px;z-index:1}h2 span{color:var(--muted);font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#list button{position:relative;display:grid;gap:3px;width:100%;text-align:left;font:800 13px/1.2 var(--font);color:var(--fg);background:var(--panel);border:3px solid transparent;border-radius:12px;padding:4px 4px 6px;cursor:pointer;min-width:0}
+#list button:hover{border-color:var(--accent)}#list button[aria-current="true"]{border-color:var(--line);background:var(--on);color:#0E0B12}
+#list img,#list canvas.tiny{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:8px;display:block;background:var(--stage)}
+.nm{min-width:0;padding-inline:3px;overflow-wrap:anywhere}em{position:absolute;top:8px;left:8px;font-style:normal;font-size:11px;font-weight:900;background:var(--new);color:#0E0B12;border-radius:6px;padding:0 5px;border:2px solid #0E0B12}
+[data-count]{position:absolute;top:8px;right:8px;background:var(--warn);color:#fff;border-radius:999px;min-width:22px;text-align:center;font-size:12px;padding:1px 6px}
+.none{color:var(--muted);padding:12px}
+.head{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-bottom:8px}.head h2{all:unset;font-size:24px;font-weight:900}.head #used,.head #story{font-weight:800;font-size:12px;border-radius:999px;padding:1px 10px;background:var(--panel);color:var(--muted)}.head #story{background:var(--on);color:#0E0B12}
+.stage{position:relative;border:4px solid var(--line);border-radius:16px;overflow:hidden;background:var(--stage);line-height:0}
+.stage canvas{display:block;max-width:100%;touch-action:none}#stage3d[data-tool="mark"] canvas,#stage3d[data-tool="nick"] canvas{cursor:crosshair}
+#stageflat{display:flex;justify-content:center;padding:14px;min-height:380px}#flat{max-height:560px;width:auto;height:auto;max-width:100%}
+#loading{position:absolute;inset:0;display:grid;place-items:center;font:800 16px var(--font);line-height:1.4;padding:16px;text-align:center}
+#pins{position:absolute;inset:0;pointer-events:none}.pin{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:var(--warn);color:#fff;border:3px solid #0E0B12;font:900 13px/20px var(--font);text-align:center}.pin.now{background:var(--new);color:#0E0B12}
+.bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}#tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center}#tools[hidden]{display:none}#pinhint{color:var(--muted);font-weight:800}
+.below{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:14px}
+#usecard{display:grid;gap:8px;align-content:start;background:var(--panel);border-radius:14px;padding:12px 14px;min-width:0}#usecard h3{margin:0;font-size:15px;font-weight:900}
+dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;margin:0}dt{color:var(--muted);font-weight:800}dd{margin:0;min-width:0;font-variant-numeric:tabular-nums}
+pre{margin:0;background:var(--code);color:var(--codefg);border-radius:10px;padding:8px 10px;font:600 12.5px/1.45 ui-monospace,Menlo,monospace;overflow-x:auto}
+.copyrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}#copied{color:var(--accent);font-weight:800}
+#noteform{display:grid;gap:8px;align-content:start;min-width:0}label{font-weight:900}textarea{width:100%;min-height:74px;resize:vertical;font:600 15px var(--font);color:var(--fg);background:var(--panel);border:3px solid var(--line);border-radius:12px;padding:8px 10px}.save{justify-self:start;background:var(--on);color:#0E0B12;padding:6px 16px}
+#store{color:var(--muted);font-size:13px}
+#notes{list-style:none;margin:0;padding:0;display:grid;gap:6px}.note{display:flex;gap:10px;align-items:flex-start;background:var(--panel);border-radius:12px;padding:8px 10px}.note p{margin:0;overflow-wrap:anywhere}.note small{color:var(--muted)}.note>div{flex:1;min-width:0}.num{flex:none;width:24px;height:24px;border-radius:50%;background:var(--warn);color:#fff;font:900 12px/24px var(--font);text-align:center}.note.fixed{opacity:.6}.note.fixed .num{background:var(--accent);color:#0E0B12}.empty{color:var(--muted)}.mini{flex:none;padding:2px 10px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:900px){.main,.below{grid-template-columns:minmax(0,1fr)}#list{max-height:320px}header h1{font-size:22px}}
+</style>
+
+<div class="wrap">
+<header><h1>What If Asset Library</h1><span id="total"></span><span id="fixcount">Nothing to fix yet</span></header>
+<div id="find">
+<div id="searchwrap"><input id="q" type="search" placeholder="Search: bus, teacher, food, fire..." aria-label="Search assets" autocomplete="off"></div>
+<div id="filters" role="group" aria-label="Filter assets"><button class="chip" data-type="all" aria-pressed="true">All</button><button class="chip" data-type="places" aria-pressed="false">Places</button><button class="chip" data-type="people" aria-pressed="false">People</button><button class="chip" data-type="props" aria-pressed="false">Props</button><span class="gap"></span><button class="chip" data-story="any" aria-pressed="true">Any story</button><button class="chip" data-story="Lies" aria-pressed="false">Lies</button><button class="chip" data-story="Thoughts" aria-pressed="false">Thoughts</button><button class="chip" data-story="Stone Age" aria-pressed="false">Stone Age</button></div>
+</div>
+<div class="main">
+<nav id="list" aria-label="Assets"></nav>
+<main>
+<div class="head"><h2 id="title">Loading</h2><span id="story"></span><span id="used"></span></div>
+<div class="stage" id="stage3d" data-tool="look"><canvas id="c" width="1280" height="720"></canvas><div id="pins"></div><div id="loading">Building the 3D set...</div></div>
+<div class="stage" id="stageflat" hidden><canvas id="flat"></canvas></div>
+<div class="bar" id="views"></div>
+<div class="bar" id="tools"><button class="chip" data-tool="look">Look around</button><button class="chip" data-tool="nick">Move Nick</button><button class="chip" data-tool="mark">Mark a problem</button><button class="chip" id="nicktoggle" aria-pressed="true">Show Nick (1.75 m)</button><span id="pinhint"></span></div>
+<div class="below">
+<section id="usecard" aria-label="How to use this asset"><h3>Use it in a new scene</h3>
+<dl><dt>Good for</dt><dd id="use-good"></dd><dt>Seen in</dt><dd id="use-where"></dd><dt id="use-rule-dt">Rule</dt><dd id="use-rule"></dd></dl>
+<pre id="use-code"></pre>
+<div class="copyrow"><button class="chip" id="copyname" type="button">Copy request for Claude</button><button class="chip" id="copycode" type="button">Copy code</button><span id="copied" role="status"></span></div></section>
+<div><form id="noteform"><label for="note">What should change here?</label><textarea id="note" placeholder="Example: this plant is too big next to Nick."></textarea><button class="save" type="submit">Save note</button><span id="store">Connecting notes...</span></form>
+<ul id="notes"></ul></div>
+</div>
+</main>
+</div>
+</div>
+<script type="module" src="library.js"></script>
